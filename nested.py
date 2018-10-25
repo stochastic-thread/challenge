@@ -9,7 +9,7 @@ class Solution():
         retval = ""
         if n is None:
             n = self.current_offset
-        for s in list(xrange(n)):
+        for s in list(range(n)):
             retval += " "
         return retval
 
@@ -22,17 +22,17 @@ class Solution():
     # If the item is a char, you immediately add character to the accumulator as a string, and increment
     # the current_offset by 1, and add a newline to the accumulator
 
-    def execute_internal(self, remaining_input, acc):
+    def execute_internal(self, remaining_input, acc, offset=0):
+        tmp = ""
         if len(remaining_input) > 0:
             for i,x in enumerate(remaining_input):
                 if x == ():
                     continue
                 else:
                     if self.allowed_item(x):
-                        acc += (self.whitespace()+x+"\n")
+                        acc += (self.whitespace(n=offset)+x+"\n")
                     else:
-                        self.current_offset += 1
-                        return self.execute_internal(x,acc)
+                        acc = self.execute_internal(x,acc,offset=offset+1)
         return acc
 
     def execute(self, nested_input):
@@ -48,6 +48,7 @@ class Solution():
         testcases.append(('a',()))
         testcases.append(('a',('b',)))
         testcases.append(('a',('b',(),'c',())))
+        testcases.append(('a',('b',(),'c',(),'d',()), 'e',(), 'f',()))
         testcases.append(('a',('b',(),'c',(),'d',()), 'e',(), 'f',()))
 
         test_case_map = {}
@@ -69,8 +70,6 @@ class Solution():
         else:
             return {'testcases':testcases, 'testcasemap': test_case_map}
 
-
-
 def main():
     testcasedata = Solution().test_cases(show=False, inputsOnly=False)
     cases = testcasedata['testcases']
@@ -81,6 +80,6 @@ def main():
         print("Input:\n{0}\n".format(case))
         print("Your output:\n{0}\n".format(Solution().execute(case)))
         print("Desired output:\n{0}\n".format(tcmap[case]))
+
 if __name__ == "__main__":
     main()
-
